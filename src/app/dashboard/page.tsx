@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Weather from '@/components/Weather';
+import FinancialData from '@/components/FinancialData';
+import CovidData from '@/components/CovidData';
 
 const DashboardPage: React.FC = () => {
   return (
@@ -22,6 +24,8 @@ const DashboardPage: React.FC = () => {
           <div className="bg-white p-4 rounded shadow">Summary Card 2</div>
           <div className="bg-white p-4 rounded shadow">Summary Card 3</div>
           <Weather />
+          <FinancialData />
+          <CovidData />
         </div>
       </main>
     </div>
