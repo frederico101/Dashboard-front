@@ -4,6 +4,7 @@ import React from 'react';
 import Weather from '@/components/Weather';
 import FinancialData from '@/components/FinancialData';
 import CovidData from '@/components/CovidData';
+import NewsHeadlines from '@/components/NewsHeadlines';
 
 const DashboardPage: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const DashboardPage: React.FC = () => {
           <Weather />
           <FinancialData />
           <CovidData />
+          {/* <NewsHeadlines /> */}
         </div>
       </main>
     </div>

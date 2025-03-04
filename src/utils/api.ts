@@ -51,3 +51,21 @@ export const fetchCovidData = async (country: string) => {
     throw error;
   }
 };
+
+const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
+const NEWS_API_BASE_URL = 'https://newsapi.org/v2';
+
+export const fetchNewsHeadlines = async (country: string) => {
+  try {
+    const response = await axios.get(`${NEWS_API_BASE_URL}/top-headlines`, {
+      params: {
+        country: country,
+        apiKey: NEWS_API_KEY,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching news headlines:', error);
+    throw error;
+  }
+};
