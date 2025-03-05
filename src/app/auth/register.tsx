@@ -1,5 +1,5 @@
-// filepath: /global-insights-dashboard/pages/auth/register.tsx
-import React from 'react';
+import { signIn } from "next-auth/react";
+import React from "react";
 
 const RegisterPage: React.FC = () => {
   return (
@@ -9,7 +9,13 @@ const RegisterPage: React.FC = () => {
         <input type="text" placeholder="Name" className="mb-4 p-2 border rounded w-full" />
         <input type="email" placeholder="Email" className="mb-4 p-2 border rounded w-full" />
         <input type="password" placeholder="Password" className="mb-4 p-2 border rounded w-full" />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Register</button>
+        <button
+          type="button"
+          className="bg-blue-500 text-white p-2 rounded w-full"
+          onClick={() => signIn("email")}
+        >
+          Register with Email
+        </button>
       </form>
     </div>
   );

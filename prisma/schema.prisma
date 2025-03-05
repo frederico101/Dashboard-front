@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:12124545@localhost:5432/dashboard?schema=public"
 }
 
 generator client {
@@ -12,8 +12,10 @@ model User {
   name           String?
   email          String   @unique
   emailVerified  DateTime?
+  emailToken     String?  // Add this line
   image          String?
   role           String   @default("user")
+  password       String
   accounts       Account[]
   sessions       Session[]
 }

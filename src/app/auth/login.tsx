@@ -1,5 +1,6 @@
-// filepath: /global-insights-dashboard/pages/auth/login.tsx
-import React from 'react';
+// filepath: /C:/Users/fredy/Documents/slashDev/Test/next/front/src/pages/auth/login.tsx
+import { signIn } from "next-auth/react";
+import React from "react";
 
 const LoginPage: React.FC = () => {
   return (
@@ -7,8 +8,13 @@ const LoginPage: React.FC = () => {
       <form className="bg-white p-6 rounded shadow-md">
         <h2 className="text-2xl mb-4">Login</h2>
         <input type="email" placeholder="Email" className="mb-4 p-2 border rounded w-full" />
-        <input type="password" placeholder="Password" className="mb-4 p-2 border rounded w-full" />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Login</button>
+        <button
+          type="button"
+          className="bg-blue-500 text-white p-2 rounded w-full"
+          onClick={() => signIn("email")}
+        >
+          Login with Email
+        </button>
       </form>
     </div>
   );
