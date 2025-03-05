@@ -1,29 +1,55 @@
 "use client";
 
-import LogoutPage from "@/app/logout/LogoutPage";
-import { signIn, signOut, useSession } from "next-auth/react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const Navigation: React.FC = () => {
-  const { data: session, status } = useSession();
+  const [role, setRole] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        // Verificar se o email é "fredyalves.fredyalves@hotmail.com" e definir a função como "admin"
+        if (payload.email === "fredyalves.fredyalves@hotmail.com") {
+          setRole("admin");
+        } else {
+          setRole(payload.role);
+        }
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
+    }
+  }, [router]);
+
+  const handleLogout = async () => {
+    // Clear the JWT token from localStorage
+    localStorage.removeItem("token");
+
+    // Redirect to the login page
+    router.push("/login");
+  };
 
   return (
     <nav className="bg-gray-800 text-white p-4">
       <ul className="flex space-x-4">
-        {status === "authenticated" ? (
+        {role ? (
           <>
             <li><a href="/dashboard" className="block p-2">Dashboard</a></li>
             <li><a href="/profile" className="block p-2">Profile</a></li>
-            <li><a href="/admin" className="block p-2">Admin</a></li>
-            <li><a href="/logout" className="block p-2" onClick={() => signOut()}>Logout</a></li>
+            {role === "admin" && (
+              <li><a href="/admin" className="block p-2">Admin</a></li>
+            )}
+            <li><button onClick={handleLogout} className="block p-2">Logout</button></li>
           </>
         ) : (
           <>
             <li><a href="/register" className="block p-2">Register</a></li>
-            <li><a href="/login" className="block p-2" onClick={() => signIn()}>Login</a></li>
-             {/* form to send data to back end */}
-            {/* <li><a href="/RegisterForm" className="block p-2">Register</a></li>
-            <li><a href="/LoginForm" className="block p-2" onClick={() => signIn()}>Login</a></li> */}
+            <li><button onClick={() => router.push("/login")} className="block p-2">Login</button></li>
           </>
         )}
       </ul>
