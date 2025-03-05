@@ -4,15 +4,11 @@ import React, { useEffect } from "react";
 
 const LogoutPage: React.FC = () => {
   useEffect(() => {
-    // Call the custom logout API route
-    fetch("/api/auth/logout")
-      .then(() => {
-        // Redirect to the login page after logging out
-        window.location.href = "/login";
-      })
-      .catch((error) => {
-        console.error("Error logging out:", error);
-      });
+    // Clear the JWT token from localStorage
+    localStorage.removeItem("token");
+
+    // Redirect to the login page
+    window.location.href = "/login";
   }, []);
 
   return (

@@ -1,26 +1,34 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/navigation"; // Updated import
+
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/users/login", {
+        email,
+        password,
+      });
 
-    if (res?.error) {
-      setError(res.error);
-    } else {
-      window.location.href = "/dashboard";
+      const { token } = response.data;
+
+      // Save the token in localStorage
+      localStorage.setItem("token", token);
+
+      // Redirect to the dashboard
+      router.push("/dashboard");
+    } catch (err) {
+      setError("Invalid email or password");
     }
   };
 
