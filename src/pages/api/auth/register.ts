@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: "Todos os campos são obrigatórios" });
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+  const existingUser = await prisma.user.findUnique({ where: { email } });   //change to backend
 
   if (existingUser) {
     return res.status(400).json({ message: "Usuário já existe" });
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const hashedPassword = await bcrypt.hash(password, 10);
   const emailToken = uuidv4();
 
-  const user = await prisma.user.create({
+  const user = await prisma.user.create({     //change to backend
     data: {
       email,
       name,

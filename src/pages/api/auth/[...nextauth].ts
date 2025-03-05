@@ -18,7 +18,7 @@ export default NextAuth({
           throw new Error("No credentials provided");
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({                //change to backend
           where: { email: credentials.email },
         });
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { registerUser } from "@/services";
 import React, { useState } from "react";
 
 const Register: React.FC = () => {
@@ -14,19 +15,17 @@ const Register: React.FC = () => {
     setError("");
     setSuccess("");
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, name }),
-    });
+    try {
+      // Call the registerUser function from your services
+      const response = await registerUser({ email, password, name });
 
-    if (res.ok) {
-      setSuccess("Registration successful! Please verify your email box.");
-    } else {
-      const data = await res.json();
-      setError(data.message || "Something went wrong.");
+      if (response.message) {
+        setSuccess("Registration successful! Please verify your email box.");
+      } else {
+        setError("Something went wrong.");
+      }
+    } catch (error) {
+      setError("Something went wrong.");
     }
   };
 

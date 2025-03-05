@@ -14,7 +14,7 @@ export interface RegisterData {
     name: string;
     email: string;
     password: string;
-    password_confirmation: string;
+    password_confirmation?: string; // Make it optional
 }
 
 export interface LoginData {

@@ -16,13 +16,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: "Invalid token" });
   }
 
-  const user = await prisma.user.findFirst({ where: { emailToken: token } });
+  const user = await prisma.user.findFirst({ where: { emailToken: token } }); //change to backend
 
   if (!user) {
     return res.status(400).json({ message: "Invalid token" });
   }
 
-  await prisma.user.update({
+  await prisma.user.update({               //change to backend
     where: { id: user.id },
     data: {
       emailVerified: new Date(), // Set emailVerified to the current date and time
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
 
   // Create a session for the user
-  const session = await prisma.session.create({
+  const session = await prisma.session.create({  //change to backend
     data: {
       sessionToken: jwtToken,
       userId: user.id,
