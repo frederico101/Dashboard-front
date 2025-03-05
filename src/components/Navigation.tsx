@@ -15,12 +15,15 @@ const Navigation: React.FC = () => {
             <li><a href="/dashboard" className="block p-2">Dashboard</a></li>
             <li><a href="/profile" className="block p-2">Profile</a></li>
             <li><a href="/admin" className="block p-2">Admin</a></li>
-            <li><a href="/logout" className="block p-2">Logout</a></li>
+            <li><a href="/logout" className="block p-2" onClick={() => signOut()}>Logout</a></li>
           </>
         ) : (
           <>
             <li><a href="/register" className="block p-2">Register</a></li>
             <li><a href="/login" className="block p-2" onClick={() => signIn()}>Login</a></li>
+             {/* form to send data to back end */}
+            {/* <li><a href="/RegisterForm" className="block p-2">Register</a></li>
+            <li><a href="/LoginForm" className="block p-2" onClick={() => signIn()}>Login</a></li> */}
           </>
         )}
       </ul>

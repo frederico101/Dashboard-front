@@ -1,37 +1,32 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import Weather from "@/components/Weather";
 import FinancialData from "@/components/FinancialData";
 import CovidData from "@/components/CovidData";
-import NewsHeadlines from "@/components/NewsHeadlines";
 
 const DashboardPage: React.FC = () => {
   const { data: session, status } = useSession();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated" && !isRedirecting) {
-      setIsRedirecting(true);
-      window.location.href = "/login";
+    if (status === "unauthenticated") {
+      router.push("/login");
     }
-  }, [status, isRedirecting]);
+  }, [status, router]);
 
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="spinner">Loading...</div>
+        <div>Loading...</div>
       </div>
     );
   }
 
-  if (status === "unauthenticated") {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>You need to log in to access the dashboard.</p>
-      </div>
-    );
+  if (!session) {
+    return null; // or a loading state
   }
 
   return (
@@ -39,23 +34,21 @@ const DashboardPage: React.FC = () => {
       <aside className="w-64 bg-gray-800 text-white p-4">
         <nav>
           <ul>
-            <li className="mb-2"><a href="/dashboard" className="block p-2">Dashboard</a></li>
-            <li className="mb-2"><a href="/profile" className="block p-2">Profile</a></li>
-            <li className="mb-2"><a href="/admin" className="block p-2">Admin</a></li>
-            <li className="mb-2"><a href="/logout" className="block p-2">Logout</a></li>
+            <li className="mb-2">
+              <a href="/dashboard" className="block p-2">Dashboard</a>
+            </li>
+            <li className="mb-2">
+              <a href="/profile" className="block p-2">Profile</a>
+            </li>
           </ul>
         </nav>
       </aside>
       <main className="flex-1 p-4">
-        <h1 className="text-2xl mb-4">Dashboard</h1>
+        <h1 className="text-2xl mb-4">Welcome, {session.user.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded shadow">Summary Card 1</div>
-          <div className="bg-white p-4 rounded shadow">Summary Card 2</div>
-          <div className="bg-white p-4 rounded shadow">Summary Card 3</div>
           <Weather />
           <FinancialData />
           <CovidData />
-          {/* <NewsHeadlines /> */}
         </div>
       </main>
     </div>
