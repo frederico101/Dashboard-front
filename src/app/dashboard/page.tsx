@@ -1,12 +1,39 @@
 "use client";
 
-import React from 'react';
-import Weather from '@/components/Weather';
-import FinancialData from '@/components/FinancialData';
-import CovidData from '@/components/CovidData';
-import NewsHeadlines from '@/components/NewsHeadlines';
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import Weather from "@/components/Weather";
+import FinancialData from "@/components/FinancialData";
+import CovidData from "@/components/CovidData";
+import NewsHeadlines from "@/components/NewsHeadlines";
 
 const DashboardPage: React.FC = () => {
+  const { data: session, status } = useSession();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (status === "unauthenticated" && !isRedirecting) {
+      setIsRedirecting(true);
+      window.location.href = "/login";
+    }
+  }, [status, isRedirecting]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="spinner">Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p>You need to log in to access the dashboard.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex">
       <aside className="w-64 bg-gray-800 text-white p-4">
@@ -15,6 +42,7 @@ const DashboardPage: React.FC = () => {
             <li className="mb-2"><a href="/dashboard" className="block p-2">Dashboard</a></li>
             <li className="mb-2"><a href="/profile" className="block p-2">Profile</a></li>
             <li className="mb-2"><a href="/admin" className="block p-2">Admin</a></li>
+            <li className="mb-2"><a href="/logout" className="block p-2">Logout</a></li>
           </ul>
         </nav>
       </aside>

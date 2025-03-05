@@ -1,35 +1,32 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/utils/prisma"; // Criamos uma instância global de Prisma
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 
-const prisma = new PrismaClient();
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "fredyalves.fredyalves101@gmail.com",//process.env.EMAIL_FROM,
-    pass: "bcpx odvx xskv hasp"//process.env.EMAIL_PASSWORD,
+    user: process.env.NEXT_PUBLIC_EMAIL_FROM,
+    pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
   },
 });
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return res.status(405).end(); // Method Not Allowed
+    return res.status(405).json({ message: "Método não permitido" });
   }
 
   const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
-    return res.status(400).json({ message: "Missing required fields" });
+    return res.status(400).json({ message: "Todos os campos são obrigatórios" });
   }
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
+    return res.status(400).json({ message: "Usuário já existe" });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -46,19 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   const mailOptions = {
-    from: "fredyalves.fredyalves101@gmail.com", //process.env.EMAIL_FROM,
+    from: process.env.NEXT_PUBLIC_EMAIL_FROM,
     to: email,
-    subject: "Email Confirmation",
-    text: `Please confirm your email by clicking the following link: ${process.env.NEXTAUTH_URL}/api/confirm-email?token=${emailToken}`,
+    subject: "Confirme seu e-mail",
+    text: `Clique no link para confirmar seu e-mail: ${process.env.NEXTAUTH_URL}/api/confirm-email?token=${emailToken}`,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email:", error);
-    } else {
-      console.log("Email sent:", info.response);
-    }
-  });
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Erro ao enviar e-mail:", error);
+    return res.status(500).json({ message: "Erro ao enviar e-mail de verificação" });
+  }
 
-  return res.status(201).json(user);
+  return res.status(201).json({ message: "Usuário registrado! Verifique seu e-mail." });
 }
