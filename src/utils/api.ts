@@ -5,7 +5,7 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
-const ALPHA_VANTAGE_BASE_URL = 'https://www.alphavantage.co/query';
+const ALPHA_VANTAGE_BASE_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'//'https://www.alphavantage.co/query';
 
 const DISEASE_SH_API_URL = process.env.NEXT_PUBLIC_DISEASE_SH_API_URL;
 
@@ -25,7 +25,7 @@ export const fetchWeatherData = async (city: string) => {
   }
 };
 
-export const fetchFinancialData = async (symbol: string) => {
+export const fetchBitcoinPrice = async (symbol: string) => {
     try {
       const response = await axios.get(ALPHA_VANTAGE_BASE_URL, {
         params: {

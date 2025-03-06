@@ -1,51 +1,49 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
 
 export default NextAuth({
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials) {
-          throw new Error("No credentials provided");
-        }
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     email: { label: "Email", type: "email" },
+    //     password: { label: "Password", type: "password" },
+    //   },
+   //   async authorize(credentials) {
+     //   if (!credentials) {
+       //   throw new Error("No credentials provided");
+        //}
 
-        const user = await prisma.user.findUnique({                //change to backend
-          where: { email: credentials.email },
-        });
+        // const user = await prisma.user.findUnique({                //change to backend
+        //   where: { email: credentials.email },
+        // });
 
-        if (!user) {
-          throw new Error("No user found with the email");
-        }
+        // if (!user) {
+        //   throw new Error("No user found with the email");
+        // }
 
-        if (!user.emailVerified) {
-          throw new Error("Please verify your email before logging in");
-        }
+        // if (!user.emailVerified) {
+        //   throw new Error("Please verify your email before logging in");
+        // }
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+     //   const isValid = await bcrypt.compare(credentials.password, user.password);
 
-        if (!isValid) {
-          throw new Error("Invalid password");
-        }
+        // if (!isValid) {
+        //   throw new Error("Invalid password");
+        // }
 
         // Return a User object that matches the User interface
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name || null, // Ensure name is either string or null
-          role: user.role,
-        };
-      },
-    }),
-  ],
+     //   return {
+        //   id: user.id,
+        //   email: user.email,
+        //   name: user.name || null, // Ensure name is either string or null
+        //   role: user.role,
+        // };
+     // },
+  //  }),
+ ],
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
