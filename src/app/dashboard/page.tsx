@@ -48,14 +48,14 @@ const DashboardPage: React.FC = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
   
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-  
+      // if (!token) {
+      //   router.push("/login");
+      //   return;
+      // }
+    console.log("token", token);
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/users/protected",
+          "http://127.0.0.1:8000/api/protected",
           {}, // Empty body (if no data is required)
           {
             headers: {
@@ -131,7 +131,6 @@ const DashboardPage: React.FC = () => {
           <Weather />
           <BitcoinPrice />
           <CovidData />
-          {/* <NewsHeadlines /> */}
         </div>
       </main>
     </div>

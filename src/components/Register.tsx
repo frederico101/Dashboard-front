@@ -1,6 +1,7 @@
 "use client";
 
 import { registerUser } from "@/services";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const Register: React.FC = () => {
@@ -9,7 +10,7 @@ const Register: React.FC = () => {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -20,7 +21,8 @@ const Register: React.FC = () => {
       const response = await registerUser({ email, password, name });
 
       if (response.message) {
-        setSuccess("Registration successful! Please verify your email box.");
+        setSuccess("Registration successful!");
+        router.push("/dashboard");
       } else {
         setError("Something went wrong.");
       }
@@ -57,7 +59,7 @@ const Register: React.FC = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
+            <label className="block text-gray-700">Passwords</label>
             <input
               type="password"
               value={password}
