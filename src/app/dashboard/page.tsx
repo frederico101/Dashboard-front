@@ -14,6 +14,7 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
 
   // Theme toggle effect
@@ -48,11 +49,11 @@ const DashboardPage: React.FC = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
   
-      // if (!token) {
-      //   router.push("/login");
-      //   return;
-      // }
-    console.log("token", token);
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
       try {
         const response = await axios.post(
           "http://127.0.0.1:8000/api/protected",
@@ -65,6 +66,7 @@ const DashboardPage: React.FC = () => {
         );
   
         setData(response.data);
+        setRole(response.data.role); // Assuming your API response includes the user's role
         setLoading(false);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response) {
@@ -101,6 +103,13 @@ const DashboardPage: React.FC = () => {
     );
   }
 
+  const handleLogout = () => {
+    router.push("/login"); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setRole(null);
+  };
+
   return (
     <div className="min-h-screen flex dark:bg-gray-900 transition-colors duration-200">
       <aside className="w-64 bg-gray-800 text-white p-4">
@@ -118,7 +127,10 @@ const DashboardPage: React.FC = () => {
           <ul>
             <li className="mb-2"><a href="/dashboard" className="block p-2 rounded hover:bg-gray-700 transition-colors">Dashboard</a></li>
             <li className="mb-2"><a href="/profile" className="block p-2 rounded hover:bg-gray-700 transition-colors">Profile</a></li>
-            <li className="mb-2"><a href="/admin" className="block p-2 rounded hover:bg-gray-700 transition-colors">Admin</a></li>
+            <button onClick={handleLogout} className="block p-2">Logout</button>
+            {role === "admin" && (
+              <li className="mb-2"><a href="/admin" className="block p-2 rounded hover:bg-gray-700 transition-colors">Admin</a></li>
+            )}
           </ul>
         </nav>
       </aside>

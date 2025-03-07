@@ -19,8 +19,9 @@ const LoginPage: React.FC = () => {
         email,
         password,
       });
-
-      const { token } = response.data;
+    console.log("response.data;", response.data);
+      const { token, user } = response.data;
+      localStorage.setItem("role", user.role); 
 
       // Save the token in localStorage
       localStorage.setItem("token", token);

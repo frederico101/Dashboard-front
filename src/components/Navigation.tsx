@@ -1,65 +1,52 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
 
 const Navigation: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null means loading
   const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    
-    if (token) {
-      // Send a request to verify if the token is still valid
-      const verifyToken = async () => {
-        try {
-          const verifyResponse = await fetch("http://127.0.0.1:8000/api/users/user", {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-          });
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const storedRole = localStorage.getItem("role");
 
-          if (verifyResponse.ok) {
-            // Token is valid, user is logged in
-            const data = await verifyResponse.json();
-            setIsLoggedIn(true);
-            setRole(data.role || null); // Assuming your API response includes the user's role
-          } else {
-            // Token is invalid or expired, clear token from localStorage
-            localStorage.removeItem("token");
-            setIsLoggedIn(false);
-          }
-        } catch (error) {
-          console.error("Failed to verify token:", error);
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
+      if (token) {
+        setIsLoggedIn(true);
+        if (storedRole) {
+          setRole(storedRole.trim().toLowerCase());
         }
-      };
-
-      verifyToken();
-    } else {
-      setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(false);
+      }
     }
-  }, [router]);
+  }, []);
 
   const handleLogout = () => {
+    router.push("/login"); // Redirect before clearing storage
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setIsLoggedIn(false);
-    router.push("/login");
+    setRole(null);
   };
+
+  // If the login status is still loading (null), render a loading message
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>; // Or a spinner or some loading UI
+  }
 
   return (
     <nav className="bg-gray-800 text-white p-4">
       <ul className="flex space-x-4">
         {isLoggedIn ? (
           <>
-            <li><a href="/dashboard" className="block p-2">Dashboard</a></li>
-            <li><a href="/profile" className="block p-2">Profile</a></li>
+            <li><Link href="/dashboard" className="block p-2">Dashboard</Link></li>
+            <li><Link href="/profile" className="block p-2">Profile</Link></li>
             {role === "admin" && (
-              <li><a href="/admin" className="block p-2">Admin</a></li>
+              <li><Link href="/admin" className="block p-2">Admin</Link></li>
             )}
             <li className="ml-auto">
               <button onClick={handleLogout} className="block p-2">Logout</button>
@@ -67,8 +54,8 @@ const Navigation: React.FC = () => {
           </>
         ) : (
           <>
-            <li><a href="/login" className="block p-2">Login</a></li>
-            <li><a href="/register" className="block p-2">Register</a></li>
+            <li><Link href="/login" className="block p-2">Login</Link></li>
+            <li><Link href="/register" className="block p-2">Register</Link></li>
           </>
         )}
       </ul>
